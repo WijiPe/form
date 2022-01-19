@@ -1,0 +1,295 @@
+import React, { useState } from  'react';
+import styles from './Style.module.css'
+    
+    
+const UserForm = (props) => {
+    const [firstname, setFirstName] = useState("");
+    const [firstnameError, setFirstnameError] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [lastnameError, setLastnameError] = useState("");
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [password, setPassword] = useState("");  
+    const [passwordError, setPasswordError] = useState("");  
+    const [confirmPassword, setConfirmPassword] = useState(""); 
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");   
+    
+    const createUser = (e) => {
+        e.preventDefault();
+        const newUser = { firstname, lastname, email, password, confirmPassword };
+        console.log("Welcome", newUser);
+    };
+    
+    const validationFirstname = (e) => {
+        setFirstName(e.target.value ); 
+        if(e.target.value.length  < 1) {
+            setFirstnameError("Firstname required")
+        }else if(e.target.value.length  < 2) {
+            setFirstnameError("Firstname must be at least 2 charactors")
+        }else{
+            setFirstnameError(""); 
+        }
+    };
+
+    const validationLastname = (e) => {
+        setLastname(e.target.value ); 
+        if(e.target.value.length  < 1) {
+            setLastnameError("Lastname required")
+        }else if(e.target.value.length  < 2) {
+            setLastnameError("Lastname must be at least 2 charactors")
+        }else{
+            setLastnameError(""); 
+        }
+    };
+
+    const validationEmail = (e) => {
+        setEmail(e.target.value ); 
+        if(e.target.value.length  < 1) {
+            setEmailError("Email required")
+        }else if(e.target.value.length  < 5) {
+            setEmailError("Email must be at least 5 charactors")
+        }else{
+            setEmailError(""); 
+        }
+    };
+
+    const validationPassword = (e) => {
+        setPassword(e.target.value ); 
+        if(e.target.value.length  < 1) {
+            setPasswordError("Password required")
+        }else if(e.target.value.length  < 8) {
+            setPasswordError("Password must be at least 8 charactors")
+        }else{
+            setPasswordError(""); 
+        }
+    };
+
+    const validationConfirmPassword = (e) => {
+        setConfirmPassword(e.target.value); 
+        if(e.target.value.length  < 1) {
+            setConfirmPasswordError("Confirm Password required")
+        }else if(e.target.value !== password) {
+            setConfirmPasswordError("Password must match")
+        }else{
+            setConfirmPasswordError(""); 
+        }
+    };
+
+    return(
+        <div>
+            <form onSubmit={ createUser } className={styles.form}>
+                <div>
+                    <label>Firstname: </label> 
+                    <input type="text" onChange={ validationFirstname } />
+                    {
+                        firstnameError ?
+                    <p>{ firstnameError }</p> :
+                    ""
+                    }
+                </div>
+                <div>
+                    <label>Lastname: </label> 
+                    <input type="text" onChange={ validationLastname } />
+                    {
+                        lastnameError ?
+                    <p>{ lastnameError }</p> :
+                    ' '
+                    }
+                </div>
+                <div>
+                    <label>Email: </label> 
+                    <input type="text" onChange={ validationEmail } />
+                    {
+                        emailError ?
+                    <p>{ emailError }</p> :
+                    ' '
+                    }
+                </div>
+                <div>
+                    <label>Password: </label>
+                    <input type="text" onChange={ validationPassword } />
+                    {
+                        passwordError ?
+                    <p>{ passwordError }</p> :''
+                    }
+                </div>
+                <div>
+                    <label>Confirm Password: </label>
+                    <input type="text" onChange={ validationConfirmPassword } />
+                    {
+                        confirmPasswordError ?
+                    <p>{  confirmPasswordError }</p> :
+                    ' '
+                    }
+                </div>
+                <div className={styles.group} >
+                    <input className={styles.btn1} type="submit" value="Create User" />
+                </div>
+            </form>
+
+            <p>You Form Data</p>
+
+            <p>Firstname: {firstname}</p>
+            <p>Lastname:{lastname}</p>
+            <p>Email: {email}</p>
+            <p>Password: {password}</p>
+            <p>Confirm Password:{confirmPassword}</p>
+
+        </div>
+
+    );
+};
+    
+export default UserForm;
+
+
+import React, { useReducer } from 'react';
+import styles from './Style.module.css'
+ 
+const initialState = {
+    firstname:{
+        value:'',
+        error: null
+    },
+    lastname: {
+        value:'',
+        error: null
+    },
+    email: {
+        value:'',
+        error: null
+    }
+};
+ 
+function reducer(state, action) {
+    return {
+        ...state,
+        [action.type]: action.payload
+    };
+}
+
+export default () => {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        dispatch({
+            type: name,
+            payload: value
+        });
+    }
+
+    return (
+        <div className={styles.form}>
+            <span className={styles.span}>{JSON.stringify(state)}</span>
+            <div>
+                <label>
+                    <span>Name:</span>{' '}
+                </label>
+                    <input
+                        name="firstname"
+                        value={state.firstname.value}
+                        onChange={handleChange}
+                    />
+            </div>
+            <div>
+                <label>
+                    <span>Lastname:</span>{' '}
+                </label>
+                    <input
+                        name="lastname"
+                        value={state.lastname.value}
+                        onChange={handleChange}
+                    />
+            </div>
+            <div>
+                <label>
+                    <span>Email:</span>{' '}
+                </label>
+                    <input
+                        name="email"
+                        value={state.email.value}
+                        onChange={handleChange}
+                    />
+            </div>
+        </div>
+    );
+}
+
+export default UserForm;
+
+
+
+
+import React, { useReducer } from 'react';
+import styles from './Style.module.css'
+
+const initialState = {
+    firstname:{
+        value:'',
+        error: null
+    },
+    lastname: {
+        value:'',
+        error: null
+    },
+    email: {
+        value:'',
+        error: null
+    }
+};
+ 
+function reducer(state, action) {
+    return {
+        ...state,
+        [action.type]: action.payload
+    };
+}
+
+export default () => {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        dispatch({
+            type: name,
+            payload: value
+        });
+    }
+
+    return (
+        <div className={styles.form}>
+            <span className={styles.span}>{JSON.stringify(state)}</span>
+            <div>
+                <label>
+                    <span>Firstname:</span>{' '}
+                </label>
+                    <input
+                        name="firstname"
+                        value={state.firstname.value}
+                        onChange={handleChange}
+                    />
+            </div>
+            <div>
+                <label>
+                    <span>Lastname:</span>{' '}
+                </label>
+                    <input
+                        name="lastname"
+                        value={state.lastname.value}
+                        onChange={handleChange}
+                    />
+            </div>
+            <div>
+                <label>
+                    <span>Email:</span>{' '}
+                </label>
+                    <input
+                        name="email"
+                        value={state.email.value}
+                        onChange={handleChange}
+                    />
+            </div>
+        </div>
+    );
+}
